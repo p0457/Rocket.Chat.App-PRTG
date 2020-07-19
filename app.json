@@ -1,0 +1,15 @@
+{
+    "id": "554e7015-4d6c-4cc3-ba6b-d735024af6c1",
+    "version": "0.0.1",
+    "requiredApiVersion": "^1.4.0",
+    "iconFile": "icon.png",
+    "author": {
+        "name": "Thomas Gardner",
+        "homepage": "https://github.com/tgardner851",
+        "support": "https://github.com/tgardner851/Rocket.Chat.App-PRTG"
+    },
+    "name": "PRTG",
+    "nameSlug": "prtg",
+    "classFile": "PRTGApp.ts",
+    "description": "Configure Webhooks to received notifications from your PRTG server. This application is not created by, affiliated with, or supported by Paessler or PRTG."
+}
