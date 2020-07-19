@@ -15,11 +15,31 @@ export class WebhookEndpooint extends ApiEndpoint {
         return this.success();
       }
 
+      let url = '';
+      const color = `#${request.content.attachments[0].color}`;
+      const title = request.content.attachments[0].author_name || request.content.attachments[0].fallback;
+      let text: string = request.content.attachments[0].text;
+      if (text) {
+        text = text.replace('[', '\n[');
+      }
+      console.log('****1', text);
+      const fields = new Array<IMessageAttachmentField>();
+      const actions = new Array<IMessageAction>();
+
       request.content.attachments[0].fields.forEach(f => {
-        f.short = true;
+        fields.push({
+          short: true,
+          title: f.title.trim(),
+          value: f.value
+        });
       });
       request.content.attachments[0].actions.forEach(s => {
-        s.short = true;
+        if (s.url && url === '' && s.text === 'Scan Now') url = s.url.substring(0, s.url.indexOf("/scannow")); 
+        actions.push({
+          url: s.url,
+          text: s.text,
+          type: s.type
+        });
       });
       
       const avatarUrl = await read.getEnvironmentReader().getSettings().getValueById('icon');
@@ -39,12 +59,17 @@ export class WebhookEndpooint extends ApiEndpoint {
         return this.success();
       }
 
-      const attachment = {
-        color: `#${request.content.attachments[0].color}`,
-        title: request.content.attachments[0].author_name || request.content.attachments[0].fallback,
-        text: request.content.attachments[0].text,
-        fields: request.content.attachments[0].fields,
-        actions: request.content.attachments[0].actions
+      const attachment: IMessageAttachment = {
+        collapsed: true,
+        color,
+        title: {
+          value: title,
+          link: url
+        },
+        text,
+        fields,
+        actions,
+        actionButtonsAlignment: MessageActionButtonsAlignment.HORIZONTAL,
       };
 
       const message = modify.getCreator().startMessage({
