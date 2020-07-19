@@ -20,9 +20,16 @@ export class WebhookEndpooint extends ApiEndpoint {
       const title = request.content.attachments[0].author_name || request.content.attachments[0].fallback;
       let text: string = request.content.attachments[0].text;
       if (text) {
-        text = text.replace('[', '\n[');
+        /*
+         * To handle situations with text like:
+         *    Failed to establish secure connection [Step 0] Socket Error # 10061 Connection refused. [Step 1] Socket Error # 10061 Connection refused.
+         * Better displayed as:
+         *    Failed to establish secure connection
+         *    [Step 0] Socket Error # 10061 Connection refused. 
+         *    [Step 1] Socket Error # 10061 Connection refused.
+         */
+        text = text.replace('/[/g', '\n[');
       }
-      console.log('****1', text);
       const fields = new Array<IMessageAttachmentField>();
       const actions = new Array<IMessageAction>();
 
